@@ -3,8 +3,8 @@
 # VM Variables to change if you want
 VM_MASTER_CPUS=8
 VM_MASTER_MEMORY=8192
-VM_WORKER_CPUS=12
-VM_WORKER_MEMORY=16384
+VM_WORKER_CPUS=24
+VM_WORKER_MEMORY=24576
 VM_MASTER_DISK_SIZE=50 # GB
 VM_WORKER_DISK_SIZE=200 #GB
 
@@ -108,6 +108,7 @@ done
 scp -o StrictHostKeyChecking=no ./10.sh ubuntu@${MASTER_IP}:~
 scp -o StrictHostKeyChecking=no ./20.sh ubuntu@${MASTER_IP}:~
 scp -o StrictHostKeyChecking=no ./30.sh ubuntu@${MASTER_IP}:~
+scp -o StrictHostKeyChecking=no ./40.sh ubuntu@${MASTER_IP}:~
 
 ssh -t ubuntu@${MASTER_IP} "chmod +x \${HOME}/10.sh && sudo \${HOME}/10.sh \"$5\" \"$MASTER_IP ${VM_MASTER_PREFIX}1.aamiles.org\"$WORKER_HOSTS"
 
@@ -125,3 +126,6 @@ done
 
 echo "Executing 30 on Master - CNI, NFS & MetalLB"
 ssh ubuntu@${MASTER_IP} "chmod +x \${HOME}/30.sh && sudo \${HOME}/30.sh \"${CALICO_VERSION}\" \"${CSINFS_VERSION}\" \"${METALLB_VERSION}\" \"${METALLB_SUBNET}\""
+
+echo "Executing 40 on Master - KubeConfig Extraction"
+ssh ubuntu@${MASTER_IP} "chmod +x \${HOME}/40.sh && sudo \${HOME}/40.sh \"${KUBERNETES_ADMIN_USER}\" \"${CLUSTER_NAME}\""
